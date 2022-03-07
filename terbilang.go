@@ -36,10 +36,10 @@ func convertNumber(someNumber int) string {
 				}
 			}
 
-			if printUnit == true {
+			if printUnit {
 				printUnit = false
 				addBelas := ""
-				if isBelasan == true {
+				if isBelasan {
 					addBelas = " belas"
 					isBelasan = false
 				}
@@ -80,14 +80,30 @@ func convertNumberafterComma(strNumber string) string {
 
 	arrayOfLetter := strings.Split(strNumber, "")
 	arrayOfWord := []string{}
+	koma := true
+	hitungNol := 0
 
 	if len(arrayOfLetter) >= 1 {
-		arrayOfWord = append(arrayOfWord, "koma")
 		for _, i := range arrayOfLetter {
 			j, _ := strconv.Atoi(i)
 			if j == 0 {
-				// arrayOfWord = append(arrayOfWord, "nol")
+				for k := 0; k < len(arrayOfLetter); k++ {
+					if arrayOfLetter[k] != "0" {
+						hitungNol += 1
+					}
+				}
+				if hitungNol > 0 {
+					if koma {
+						arrayOfWord = append(arrayOfWord, "koma")
+						koma = false
+					}
+					arrayOfWord = append(arrayOfWord, "nol")
+				}
 			} else {
+				if koma {
+					arrayOfWord = append(arrayOfWord, "koma")
+					koma = false
+				}
 				arrayOfWord = append(arrayOfWord, numberToText(j))
 			}
 		}
@@ -122,6 +138,10 @@ func numberToText(index int) string {
 
 func stringNumToWord(stringNum string) string {
 	var result string = ""
+
+	if stringNum == "0" {
+		return "nol"
+	}
 
 	numberComponent := strings.Split(stringNum, ".")
 	majorSegment, errStrConvert := strconv.Atoi(numberComponent[0])
